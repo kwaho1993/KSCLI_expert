@@ -2,13 +2,14 @@
 모든 PDF → WebP 이미지 변환 → book/metadata.json 저장
 GitHub Pages QR 코드 → qr.png 저장
 
-실행: python generate_metadata.py
-의존성: pip install pypdf pymupdf qrcode[pil] python-dotenv
+실행: uv sync && uv run generate_metadata.py
+       (book/img/ 는 매 실행마다 비우고 처음부터 다시 생성)
 설정:  .env 파일에서 DPI, 품질, URL 조정
 """
 
 import json
 import os
+import shutil
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -41,6 +42,11 @@ all_files = sorted(
 print(f'설정: 광고 {AD_RENDER_DPI}DPI/q{AD_WEBP_QUALITY}  논문 {PAPER_RENDER_DPI}DPI/q{PAPER_WEBP_QUALITY}')
 print(f'      URL: {SITE_URL}')
 print()
+
+# 이전 빌드의 이미지(파일명 변경으로 남은 고아 파일 포함)를 모두 지우고 새로 생성
+if IMG_DIR.exists():
+    shutil.rmtree(IMG_DIR)
+IMG_DIR.mkdir(parents=True)
 
 # ── 헬퍼 ─────────────────────────────────────────────────────────────────────
 
